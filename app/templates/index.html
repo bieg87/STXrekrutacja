@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Book Manager</title>
+
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body class="bg-secondary">
+<h2>Book manager</h2>
+<br><br>
+<form>
+    <div class="form-group">
+		<label for="publishedDate">Published Date</label>
+		<input type="text" class="form-control" id="publishedDate" placeholder="Enter published date">
+    </div>
+	<div class="form-group">
+		<label for="author">Author</label>
+		<input type="text" class="form-control" id="author" placeholder="Enter author name">
+	</div>
+</form>
+<br>
+<button class="btn btn-success btn-lg" id="submit">Show</button>
+<br><br>
+<form>
+  <div class="form-group">
+		<label for="bookId">Book id</label>
+		<input type="text" class="form-control" id="bookId" placeholder="Enter book id">
+    </div>
+</form>
+<br>
+<button class="btn btn-success btn-lg" id="bookIdSearch">Search Book Id</button>
+<br><br>
+<table border = "0" class="table table-dark">
+		<thead>
+		<tr class="font-weight-bold text-success">
+			<th scope="col">Id</th>
+			<th scope="col">Title</th>
+			<th scope="col">Authors</th>
+			<th scope="col">Categories</th>
+			<th scope="col">Published Date</th>
+		</tr>
+		</thead>
+		<tbody>
+		</tbody>
+
+</table>
+</body>
+<script>
+$(document).ready(() => {
+	getAllBooks();
+});	
+
+function getAllBooks(){
+		console.log($("#publishedDate").val())
+		$.getJSON("http://localhost:5000/books")
+		.done((data) => {
+			console.log(data);
+			$("tbody").empty();
+			for( let i = 0 ; i < data.books.length; i++){
+				$("tbody").append("<tr class='small' scope='row'><td class = 'id'>" + data.books[i].id + "</td><td class = 'title'>" + data.books[i].title + "</td><td class='author'>" + data.books[i].author  + "</td><td class='categories'>" + data.books[i].category + "</td><td class='publishedDate'>" + data.books[i].published_date + "</td></tr>");
+			}
+	});
+}
+
+$("#submit").click(function() {
+	console.log($("#publishedDate").val());
+	if ($("#publishedDate").val() !== '' || $("#author").val() !== '')
+	{
+			$.getJSON("http://localhost:5000/books?published_date=" + $("#publishedDate").val() + "&author=" + $("#author").val())
+			.done((data) => {
+				console.log(data);
+				$("tbody").empty();
+				for( let i = 0 ; i < data.books.length; i++){
+					$("tbody").append("<tr class='small' scope='row'><td class = 'id'>" + data.books[i].id + "</td><td class = 'title'>" + data.books[i].title + "</td><td class='author'>" + data.books[i].author  + "</td><td class='categories'>" + data.books[i].category + "</td><td class='publishingDate'>" + data.books[i].published_date + "</td></tr>");
+				}
+			});
+	}
+	else
+	{
+		$.getJSON("http://localhost:5000/books")
+		.done((data) => {
+			console.log(data);
+			$("tbody").empty();
+			for( let i = 0 ; i < data.books.length; i++){
+				$("tbody").append("<tr class='small' scope='row'><td class = 'id'>" + data.books[i].id + "</td><td class = 'title'>" + data.books[i].title + "</td><td class='author'>" + data.books[i].author  + "</td><td class='categories'>" + data.books[i].category + "</td><td class='publishingDate'>" + data.books[i].published_date + "</td></tr>");
+				}
+		});
+	}
+});
+
+$("#bookIdSearch").click(function() {
+	console.log($("#bookId").val());
+	$.getJSON("http://localhost:5000/books/" + $("#bookId").val())
+		.done((data) => {
+			console.log(data);
+			$("tbody").empty();
+			$("tbody").append("<tr class='small' scope='row'><td class = 'id'>" + data.book[0].id + "</td><td class = 'title'>" + data.book[0].title + "</td><td class='author'>" + data.book[0].author  + "</td><td class='categories'>" + data.book[0].category + "</td><td class='publishedDate'>" + data.book[0].published_date + "</td></tr>");
+	});
+});
+</script>
+</html>
